@@ -13,12 +13,16 @@ def worked():
     output, err = uniq.communicate()
     output = output.decode('utf-8')
 
-    day = datetime.datetime.today().replace(day=1)
-    prefix = '{}-{:0>2}-'.format(day.year, day.month) # todo: 0-pad
+    day = datetime.datetime.today()
+    if day.day < 15:
+        day = (day.replace(day=1) + datetime.timedelta(days=-1)).replace(day=1)
+    else:
+        day = day.replace(day=1)
+    prefix = '{}-{:0>2}-'.format(day.year, day.month)
 
-    days_worked = { int(day[-2:]) for day in output.split('\n') if day.startswith(prefix) }
+    days_worked = { int(d[-2:]) for d in output.split('\n') if d.startswith(prefix) }
 
-    print()
+    print(day.strftime("%B"))
     print("Mo Tu We Th Fr Sa Su")
     month = day.month
     week_index = day.weekday()
